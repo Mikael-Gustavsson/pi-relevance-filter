@@ -1,0 +1,372 @@
+{
+  "model": "github-copilot/claude-sonnet-5.5",
+  "health": {
+    "ok": true,
+    "device": "NPU",
+    "model": "ms-marco-MiniLM-L-6-v2",
+    "seq_len": 256,
+    "batch_size": 16,
+    "buckets": [
+      64,
+      128,
+      256
+    ],
+    "chunk_tokens": 200,
+    "uptime_s": 6,
+    "requests": 0
+  },
+  "rows": [
+    {
+      "usage": {
+        "input": 10,
+        "output": 1205,
+        "cacheRead": 65157,
+        "cacheWrite": 31837,
+        "cost": 0.0981782
+      },
+      "turns": 4,
+      "tool_tokens_est": 13982,
+      "npu_overhead_ms": 0,
+      "filtered_results": 0,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 97004,
+      "success": true,
+      "case": "logs",
+      "variant": "vanilla",
+      "wall_s": 12.1,
+      "exit": 0,
+      "final_excerpt": "**Root cause:** the PostgreSQL TLS certificate has expired, so payment-service can't connect to its database. That keeps `/readyz` returning 503.\n\n**Evidence from `pod.log`:**\n- Line 1402: the service is configured with `jdbc:postgresql://pg-primary.payments.svc:5432/payments`, `sslmode=verify-full` and `sslrootcert=/etc/pki/pg/ca.crt`.\n- Lines 1428\u20131433 (09:03:15): `HikariPool-1 - Exception durin"
+    },
+    {
+      "usage": {
+        "input": 6,
+        "output": 674,
+        "cacheRead": 4105,
+        "cacheWrite": 33769,
+        "cost": 0.09158499999999999
+      },
+      "turns": 2,
+      "tool_tokens_est": 15389,
+      "npu_overhead_ms": 2204,
+      "filtered_results": 1,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 37880,
+      "success": true,
+      "case": "logs",
+      "variant": "npu",
+      "wall_s": 9.5,
+      "exit": 0,
+      "final_excerpt": "**Root cause: the PostgreSQL server's TLS certificate has expired.** The payment-service can't connect to its database, so it never becomes Ready.\n\nEvidence from the log:\n- At 09:03:11, `PaymentServiceApplication v2.8.1` starts up.\n- At 09:03:15, `HikariPool-1 - Exception during pool initialization` is logged. The cause is `PSQLException: SSL error: PKIX path validation failed ... CertPathValidato"
+    },
+    {
+      "usage": {
+        "input": 8,
+        "output": 607,
+        "cacheRead": 29666,
+        "cacheWrite": 25759,
+        "cost": 0.07345009999999999
+      },
+      "turns": 3,
+      "tool_tokens_est": 13136,
+      "npu_overhead_ms": 0,
+      "filtered_results": 0,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 55433,
+      "success": true,
+      "case": "tests",
+      "variant": "vanilla",
+      "wall_s": 7.4,
+      "exit": 0,
+      "final_excerpt": "Two tests fail (2349 run, 2 failed):\n\n1. **`se.example.billing.InvoiceCalculatorTest > shouldApplyVatForSwedishCustomers()`**\n   - The assertion at `InvoiceCalculatorTest.java:88` expected `1250.00` but got `1000.00`.\n   - The result equals the net amount, so the 25% Swedish VAT was not applied. The calculator probably fails to detect or apply VAT for Swedish customers.\n\n2. **`se.example.inventory"
+    },
+    {
+      "usage": {
+        "input": 6,
+        "output": 582,
+        "cacheRead": 4110,
+        "cacheWrite": 9700,
+        "cost": 0.030493
+      },
+      "turns": 2,
+      "tool_tokens_est": 4432,
+      "npu_overhead_ms": 954,
+      "filtered_results": 1,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 13816,
+      "success": true,
+      "case": "tests",
+      "variant": "npu",
+      "wall_s": 7.3,
+      "exit": 0,
+      "final_excerpt": "Two tests fail, which matches the runner's \"2349 tests completed, 2 failed\" summary.\n\n1. **`se.example.billing.InvoiceCalculatorTest > shouldApplyVatForSwedishCustomers()`**\n   - The assertion expected `1250.00` but got `1000.00` (`InvoiceCalculatorTest.java:88`).\n   - The result is the net amount, so the 25% Swedish VAT was never added. The calculator is probably skipping VAT for Swedish customer"
+    },
+    {
+      "usage": {
+        "input": 6,
+        "output": 1120,
+        "cacheRead": 3442,
+        "cacheWrite": 22372,
+        "cost": 0.0674862
+      },
+      "turns": 2,
+      "tool_tokens_est": 12009,
+      "npu_overhead_ms": 0,
+      "filtered_results": 0,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 25820,
+      "success": true,
+      "case": "rg",
+      "variant": "vanilla",
+      "wall_s": 9.9,
+      "exit": 0,
+      "final_excerpt": "Retry backoff for the payment gateway client is built in code, and `application.yml` sets the values. I only have the `rg retry` output, so parts of this are inferred.\n\n**Where it's configured**\n- `src/main/java/se/example/payments/gateway/PaymentGatewayClient.java:57-58` builds the backoff:\n  `Retry.backoff(props.getRetry().getMaxAttempts(), props.getRetry().getInitialBackoff()).maxBackoff(props."
+    },
+    {
+      "usage": {
+        "input": 8,
+        "output": 906,
+        "cacheRead": 9754,
+        "cacheWrite": 4677,
+        "cost": 0.021743899999999997
+      },
+      "turns": 3,
+      "tool_tokens_est": 1759,
+      "npu_overhead_ms": 397,
+      "filtered_results": 1,
+      "raw_recoveries": 1,
+      "errors": [],
+      "frontier_input_tokens": 14439,
+      "success": true,
+      "case": "rg",
+      "variant": "npu",
+      "wall_s": 10.2,
+      "exit": 0,
+      "final_excerpt": "**Where it's configured**\n\n- `src/main/java/se/example/payments/gateway/PaymentGatewayClient.java:57-58` builds the backoff. It calls `Retry.backoff(maxAttempts, initialBackoff).maxBackoff(maxBackoff).jitter(0.5)`, and all three values come from `props.getRetry()`.\n- `src/main/java/se/example/payments/gateway/PaymentGatewayProperties.java:22` holds the defaults in the nested `Retry` class: `maxAtt"
+    },
+    {
+      "usage": {
+        "input": 8,
+        "output": 691,
+        "cacheRead": 31173,
+        "cacheWrite": 26730,
+        "cost": 0.0768683
+      },
+      "turns": 3,
+      "tool_tokens_est": 12813,
+      "npu_overhead_ms": 0,
+      "filtered_results": 0,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 57911,
+      "success": true,
+      "case": "build",
+      "variant": "vanilla",
+      "wall_s": 9.9,
+      "exit": 0,
+      "final_excerpt": "The build fails in the `shop-billing` module, at the `maven-compiler-plugin:compile` step.\n\nThe compiler reports:\n\n```\n/work/shop-billing/src/main/java/se/example/billing/InvoiceMapper.java:[44,31] cannot find symbol\n  symbol:   method getAmountCents()\n  location: variable line of type se.example.orders.OrderLine\n```\n\n`InvoiceMapper.java` calls `line.getAmountCents()` on line 44, but `se.example.o"
+    },
+    {
+      "usage": {
+        "input": 6,
+        "output": 546,
+        "cacheRead": 4111,
+        "cacheWrite": 6627,
+        "cost": 0.0224506
+      },
+      "turns": 2,
+      "tool_tokens_est": 2793,
+      "npu_overhead_ms": 1181,
+      "filtered_results": 1,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 10744,
+      "success": true,
+      "case": "build",
+      "variant": "npu",
+      "wall_s": 7.3,
+      "exit": 0,
+      "final_excerpt": "The build fails in the **shop-billing** module with a compilation error:\n\n```\n/work/shop-billing/src/main/java/se/example/billing/InvoiceMapper.java:[44,31] cannot find symbol\n  symbol:   method getAmountCents()\n  location: variable line of type se.example.orders.OrderLine\n```\n\n**Cause:** `InvoiceMapper.java` calls `line.getAmountCents()` at line 44. The `OrderLine` class in the upstream `shop-ord"
+    },
+    {
+      "usage": {
+        "input": 6,
+        "output": 709,
+        "cacheRead": 4104,
+        "cacheWrite": 33763,
+        "cost": 0.0919199
+      },
+      "turns": 2,
+      "tool_tokens_est": 15389,
+      "npu_overhead_ms": 2208,
+      "filtered_results": 1,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 37873,
+      "success": true,
+      "case": "logs",
+      "variant": "npu",
+      "wall_s": 9.4,
+      "exit": 0,
+      "final_excerpt": "**Root cause:** payment-service can't connect to PostgreSQL because the database's TLS certificate has expired. The app never finishes starting, so it never becomes Ready.\n\nEvidence from the log:\n\n- At 09:03:11, payment-service v2.8.1 starts up.\n- At 09:03:15, `HikariPool-1 - Exception during pool initialization` is logged. It is caused by `PSQLException: SSL error: PKIX path validation failed ..."
+    },
+    {
+      "usage": {
+        "input": 8,
+        "output": 981,
+        "cacheRead": 33603,
+        "cacheWrite": 30590,
+        "cost": 0.0896613
+      },
+      "turns": 3,
+      "tool_tokens_est": 13449,
+      "npu_overhead_ms": 0,
+      "filtered_results": 0,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 64201,
+      "success": true,
+      "case": "logs",
+      "variant": "vanilla",
+      "wall_s": 11.2,
+      "exit": 0,
+      "final_excerpt": "**Root cause:** The PostgreSQL server's TLS certificate expired on 2025-03-10. payment-service can't open its DB connection pool, so `/readyz` returns 503 and the pods never become Ready.\n\nEvidence in `pod.log`, which I found by grepping the full file because the `cat` output was truncated:\n- At 09:03:15, payment-service logs `HikariPool-1 - Exception during pool initialization`.\n- The exception i"
+    },
+    {
+      "usage": {
+        "input": 6,
+        "output": 593,
+        "cacheRead": 4111,
+        "cacheWrite": 9699,
+        "cost": 0.0306006
+      },
+      "turns": 2,
+      "tool_tokens_est": 4432,
+      "npu_overhead_ms": 954,
+      "filtered_results": 1,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 13816,
+      "success": true,
+      "case": "tests",
+      "variant": "npu",
+      "wall_s": 7.4,
+      "exit": 0,
+      "final_excerpt": "Two tests fail, which matches the runner's summary of \"2349 tests completed, 2 failed\".\n\n1. **`se.example.billing.InvoiceCalculatorTest > shouldApplyVatForSwedishCustomers()`**\n   - The assertion expected `1250.00` but got `1000.00` (`InvoiceCalculatorTest.java:88`).\n   - The 25% Swedish VAT isn't being applied to the invoice total, so the result is the net amount.\n   - This failure is what makes "
+    },
+    {
+      "usage": {
+        "input": 8,
+        "output": 579,
+        "cacheRead": 29660,
+        "cacheWrite": 25761,
+        "cost": 0.07317449999999999
+      },
+      "turns": 3,
+      "tool_tokens_est": 13136,
+      "npu_overhead_ms": 0,
+      "filtered_results": 0,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 55429,
+      "success": true,
+      "case": "tests",
+      "variant": "vanilla",
+      "wall_s": 8.8,
+      "exit": 0,
+      "final_excerpt": "Two tests fail out of 2349:\n\n1. **`se.example.billing.InvoiceCalculatorTest > shouldApplyVatForSwedishCustomers()`**\n   - The test expected `1250.00` but got `1000.00`, at `InvoiceCalculatorTest.java:88`.\n   - The result is exactly the net amount, so VAT (25%) was not applied for Swedish customers. The likely cause is a bug in the VAT logic, such as a country or customer check that doesn't match. "
+    },
+    {
+      "usage": {
+        "input": 8,
+        "output": 856,
+        "cacheRead": 9752,
+        "cacheWrite": 4655,
+        "cost": 0.021188699999999998
+      },
+      "turns": 3,
+      "tool_tokens_est": 1754,
+      "npu_overhead_ms": 393,
+      "filtered_results": 1,
+      "raw_recoveries": 1,
+      "errors": [],
+      "frontier_input_tokens": 14415,
+      "success": true,
+      "case": "rg",
+      "variant": "npu",
+      "wall_s": 10.3,
+      "exit": 0,
+      "final_excerpt": "**Where it's configured**\n\n- `src/main/java/se/example/payments/gateway/PaymentGatewayClient.java:57-58` builds the backoff. It calls `Retry.backoff(maxAttempts, initialBackoff).maxBackoff(maxBackoff).jitter(0.5)`, and all three values come from `props.getRetry()`.\n- `src/main/java/se/example/payments/gateway/PaymentGatewayProperties.java:22` holds the defaults in the nested `Retry` class: `maxAtt"
+    },
+    {
+      "usage": {
+        "input": 6,
+        "output": 1142,
+        "cacheRead": 3443,
+        "cacheWrite": 22373,
+        "cost": 0.0677088
+      },
+      "turns": 2,
+      "tool_tokens_est": 12009,
+      "npu_overhead_ms": 0,
+      "filtered_results": 0,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 25822,
+      "success": true,
+      "case": "rg",
+      "variant": "vanilla",
+      "wall_s": 9.8,
+      "exit": 0,
+      "final_excerpt": "The backoff is built in `PaymentGatewayClient.java`. Its values come from `application.yml`, which overrides the defaults in `PaymentGatewayProperties.java`. I only have your grep output, not the source files, so some of this is inferred.\n\n**Where it's configured**\n- `src/main/java/se/example/payments/gateway/PaymentGatewayClient.java:57-58` builds the backoff. It calls `Retry.backoff(props.getRet"
+    },
+    {
+      "usage": {
+        "input": 6,
+        "output": 488,
+        "cacheRead": 4111,
+        "cacheWrite": 6624,
+        "cost": 0.0218631
+      },
+      "turns": 2,
+      "tool_tokens_est": 2793,
+      "npu_overhead_ms": 1172,
+      "filtered_results": 1,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 10741,
+      "success": true,
+      "case": "build",
+      "variant": "npu",
+      "wall_s": 7.2,
+      "exit": 0,
+      "final_excerpt": "The build fails in the `shop-billing` module with a compilation error.\n\n```\nInvoiceMapper.java:[44,31] cannot find symbol\n  symbol:   method getAmountCents()\n  location: variable line of type se.example.orders.OrderLine\n```\n\n`InvoiceMapper` calls `line.getAmountCents()` on line 44, but `se.example.orders.OrderLine` (from the `shop-orders` module) has no such method. `shop-orders` compiled successf"
+    },
+    {
+      "usage": {
+        "input": 8,
+        "output": 719,
+        "cacheRead": 31168,
+        "cacheWrite": 26729,
+        "cost": 0.0771453
+      },
+      "turns": 3,
+      "tool_tokens_est": 12813,
+      "npu_overhead_ms": 0,
+      "filtered_results": 0,
+      "raw_recoveries": 0,
+      "errors": [],
+      "frontier_input_tokens": 57905,
+      "success": true,
+      "case": "build",
+      "variant": "vanilla",
+      "wall_s": 9.3,
+      "exit": 0,
+      "final_excerpt": "**Why it fails:** `shop-billing` fails to compile. The error is:\n\n```\n/work/shop-billing/src/main/java/se/example/billing/InvoiceMapper.java:[44,31] cannot find symbol\n  symbol:   method getAmountCents()\n  location: variable line of type se.example.orders.OrderLine\n```\n\nAt line 44, `InvoiceMapper` calls `line.getAmountCents()` on an `se.example.orders.OrderLine`. That class comes from the `shop-or"
+    }
+  ]
+}

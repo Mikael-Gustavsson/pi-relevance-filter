@@ -1,0 +1,8 @@
+[1/2] logs   vanilla  success=True  in=  98369 tool= 14321 turns= 4 wall=  12.8s npu=0ms raw=0
+[1/2] logs   npu      success=True  in=  74720 tool= 12211 turns= 4 wall=  14.3s npu=2296ms raw=2
+[1/2] tests  vanilla  success=True  in=  55546 tool= 13187 turns= 3 wall=   8.4s npu=0ms raw=0
+[1/2] tests  npu      success=True  in=  25499 tool=  4604 turns= 3 wall=   8.9s npu=993ms raw=1
+[1/2] rg     vanilla  success=True  in=  25822 tool= 12009 turns= 2 wall=   9.2s npu=0ms raw=0
+[1/2] rg     npu      success=True  in=  13695 tool=   528 turns= 4 wall=  12.0s npu=404ms raw=2
+[1/2] build  vanilla  success=True  in=  58000 tool= 12814 turns= 3 wall=  10.0s npu=0ms raw=0
+[1/2] build  npu      success=True  in=  10744 tool=  2793 turns= 2 wall=   7.2s npu=1195ms raw=0
