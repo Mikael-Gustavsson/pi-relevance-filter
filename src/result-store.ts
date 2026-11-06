@@ -16,10 +16,13 @@ export const sha256 = (s: string) => createHash("sha256").update(s).digest("hex"
 export class ResultStore {
 	readonly dir: string;
 	readonly home: string;
+	/** Older result directories, searched read-only by get() (e.g. ~/.pi/npu-filter/results). */
+	readonly legacyDirs: string[];
 
-	constructor(home: string) {
+	constructor(home: string, legacyHomes: string[] = []) {
 		this.home = home;
 		this.dir = join(home, "results");
+		this.legacyDirs = legacyHomes.map((h) => join(h, "results"));
 	}
 
 	private ensure() {
@@ -35,20 +38,28 @@ export class ResultStore {
 	}
 
 	update(id: string, patch: Partial<StoredResult>): void {
-		const rec = this.get(id);
+		const rec = this.lookup(this.dir, id);
 		if (!rec) return;
 		writeFileSync(join(this.dir, `${id}.json`), JSON.stringify({ ...rec, ...patch }), "utf8");
 	}
 
-	/** Accepts a full UUID or a unique prefix (>= 6 chars). */
+	/** Accepts a full UUID or a unique prefix (>= 6 chars). Searches the current store, then legacy stores. */
 	get(idOrPrefix: string): StoredResult | undefined {
+		for (const dir of [this.dir, ...this.legacyDirs]) {
+			const rec = this.lookup(dir, idOrPrefix);
+			if (rec) return rec;
+		}
+		return undefined;
+	}
+
+	private lookup(dir: string, idOrPrefix: string): StoredResult | undefined {
 		const id = idOrPrefix.trim().toLowerCase();
-		if (!/^[0-9a-f-]{6,36}$/.test(id) || !existsSync(this.dir)) return undefined;
-		let file = join(this.dir, `${id}.json`);
+		if (!/^[0-9a-f-]{6,36}$/.test(id) || !existsSync(dir)) return undefined;
+		let file = join(dir, `${id}.json`);
 		if (!existsSync(file)) {
-			const matches = readdirSync(this.dir).filter((f) => f.startsWith(id) && f.endsWith(".json"));
+			const matches = readdirSync(dir).filter((f) => f.startsWith(id) && f.endsWith(".json"));
 			if (matches.length !== 1) return undefined;
-			file = join(this.dir, matches[0]);
+			file = join(dir, matches[0]);
 		}
 		return JSON.parse(readFileSync(file, "utf8")) as StoredResult;
 	}

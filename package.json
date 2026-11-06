@@ -1,9 +1,9 @@
 {
-  "name": "pi-npu-context-filter",
+  "name": "pi-relevance-filter",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Pi extension: filter large tool results with a local Intel NPU relevance model (fail-open, reversible).",
+  "description": "Pi extension: filter large tool results with the local Relevance Filter service (NPU, GPU or CPU; fail-open, reversible).",
   "license": "MIT",
   "repository": {
     "type": "git",
