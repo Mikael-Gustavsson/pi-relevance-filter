@@ -8,6 +8,10 @@ the answer key). Success = all expected keywords appear in Pi's final answer.
 
 --device is required: the running service (python -m relevance_filter) must report exactly that device,
 so a benchmark never runs on an automatically chosen one.
+
+The cases (tool output + ground truth) come from the Relevance Filter repository: run
+`python benchmarks/generate_cases.py` there. --cases-dir defaults to ../relevance-filter/benchmarks/cases
+(a sibling checkout) or $RELEVANCE_FILTER_CASES.
 Writes benchmarks/results/ab-<timestamp>.json (metrics only, no tool content) and
 prints a comparison table.
 """
@@ -26,7 +30,8 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-FILES = {"logs": "pod.log", "tests": "test-output.txt", "rg": "rg-retry-results.txt", "build": "build.log"}
+DEFAULT_CASES = os.environ.get("RELEVANCE_FILTER_CASES") or str(ROOT.parent / "relevance-filter" / "benchmarks" / "cases")
+FILES ={"logs": "pod.log", "tests": "test-output.txt", "rg": "rg-retry-results.txt", "build": "build.log"}
 INTROS = {
     "logs": "Start by running exactly: cat pod.log",
     "tests": "The test runner output is saved in test-output.txt. Start by running exactly: cat test-output.txt",
@@ -76,19 +81,19 @@ def extension_registered() -> bool:
         exts = json.loads(settings.read_text(encoding="utf-8-sig")).get("extensions", [])
     except (OSError, ValueError):
         return False
-    me = (ROOT / "extension").resolve()
+    me = ROOT.resolve()
     return any(Path(e).resolve() == me for e in exts if isinstance(e, str))
 
 
-def run_once(case: str, meta: dict, variant: str, model: str, timeout: int) -> dict:
+def run_once(case: str, meta: dict, variant: str, model: str, timeout: int, cases_dir: Path) -> dict:
     ws = Path(tempfile.mkdtemp(prefix=f"pi-ab-{case}-"))
-    shutil.copy(ROOT / "benchmarks" / "cases" / f"{case}.txt", ws / FILES[case])
+    shutil.copy(cases_dir / f"{case}.txt", ws / FILES[case])
     prompt = f"{meta['query']} {INTROS[case]}"
     env = {**os.environ, "PI_RELEVANCE_FILTER": "1" if variant == "filter" else "0"}
     pi = shutil.which("pi") or shutil.which("pi.cmd")
     cmd = [pi, "-p", "--mode", "json", "--no-session", "--model", model]
     if not extension_registered():  # avoid loading the extension twice
-        cmd += ["-e", str(ROOT / "extension")]
+        cmd += ["-e", str(ROOT)]
     cmd.append(prompt)
     t0 = time.time()
     try:
@@ -130,8 +135,13 @@ def main() -> int:
     ap.add_argument("--model", default="github-copilot/claude-sonnet-5.5")
     ap.add_argument("--repeats", type=int, default=2)
     ap.add_argument("--cases", default=",".join(FILES))
+    ap.add_argument("--cases-dir", default=DEFAULT_CASES, help="directory with <case>.txt/.json from relevance-filter")
     ap.add_argument("--timeout", type=int, default=900)
     args = ap.parse_args()
+    cases_dir = Path(args.cases_dir)
+    if not (cases_dir / "logs.json").exists():
+        print(f"FAIL: no cases in {cases_dir}; run `python benchmarks/generate_cases.py` in relevance-filter or pass --cases-dir")
+        return 1
     try:
         h = json.load(urllib.request.urlopen(f"{args.url}/v1/health", timeout=3))
         assert h["device"] == args.device, f"service runs on {h['device']}, not {args.device}"
@@ -142,9 +152,9 @@ def main() -> int:
     out = ROOT / "benchmarks" / "results" / f"ab-{time.strftime('%Y%m%d-%H%M%S')}.json"
     for rep in range(args.repeats):
         for case in args.cases.split(","):
-            meta = json.loads((ROOT / "benchmarks" / "cases" / f"{case}.json").read_text(encoding="utf-8"))
+            meta = json.loads((cases_dir / f"{case}.json").read_text(encoding="utf-8"))
             for variant in (("vanilla", "filter") if rep % 2 == 0 else ("filter", "vanilla")):
-                r = run_once(case, meta, variant, args.model, args.timeout)
+                r = run_once(case, meta, variant, args.model, args.timeout, cases_dir)
                 rows.append(r)
                 print(f"[{rep + 1}/{args.repeats}] {case:<6} {variant:<8} success={r['success']!s:<5} "
                       f"in={r['frontier_input_tokens']:>7} tool={r['tool_tokens_est']:>6} turns={r['turns']:>2} "

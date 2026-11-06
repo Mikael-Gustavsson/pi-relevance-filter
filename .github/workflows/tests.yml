@@ -1,0 +1,17 @@
+# Typecheck and tests for the extension. The tests use a fake Relevance Filter service (no model, no Pi login),
+# including every fail-open path.
+name: tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Typecheck and tests
+        run: |
+          npm ci --no-audit --no-fund
+          npx tsc --noEmit -p .
+          npm test

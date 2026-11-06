@@ -1,15 +1,15 @@
-// Run: cd extension && npm test   (node --test with native TypeScript stripping)
+// Run: npm test   (node --test with native TypeScript stripping)
 import assert from "node:assert/strict";
 import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { createServer, type Server } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { after, before, describe, it } from "node:test";
-import { RelevanceClient, validate } from "../extension/src/client.ts";
-import { loadConfig } from "../extension/src/config.ts";
-import { formatFilteredResult } from "../extension/src/format.ts";
-import { ResultStore } from "../extension/src/result-store.ts";
-import relevanceFilter from "../extension/src/index.ts";
+import { RelevanceClient, validate } from "../src/client.ts";
+import { loadConfig } from "../src/config.ts";
+import { formatFilteredResult } from "../src/format.ts";
+import { ResultStore } from "../src/result-store.ts";
+import relevanceFilter from "../src/index.ts";
 
 const BIG = Array.from({ length: 3000 }, (_, i) => (i === 1500 ? "ERROR the needle 🚀" : `INFO noise line ${i} 日本`)).join("\n");
 

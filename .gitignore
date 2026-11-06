@@ -1,0 +1,9 @@
+node_modules/
+.env
+
+# Raw A/B logs (benchmarks/results keeps metrics only)
+benchmarks/results/raw/
+
+# Raw result store lives outside the repo (~/.pi/relevance-filter) but guard anyway
+.pi/
+__pycache__/
